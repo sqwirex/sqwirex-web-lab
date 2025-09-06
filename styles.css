@@ -1,0 +1,129 @@
+* { box-sizing: border-box; }
+:root {
+--accent: #0a7f5a;
+--accent-hover: #0db077;
+--text: #222;
+--muted: #666;
+--border: #e4e4e7;
+--bg: #ffffff;
+--container: 1100px;
+}
+html, body { height: 100%; }
+body {
+margin: 0;
+font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+font-size: 16px;
+color: var(--text);
+background: var(--bg);
+line-height: 1.6;
+}
+
+
+.container {
+max-width: var(--container);
+margin: 0 auto;
+padding: 0 20px;
+}
+
+
+header {
+position: sticky;
+top: 0;
+background: #fff;
+border-bottom: 1px solid var(--border);
+padding: 20px 0;
+margin: 0 0 28px 0;
+z-index: 10;
+}
+.header-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+
+
+h1.logo {
+margin: 0;
+font-size: 28px;
+letter-spacing: 0.2px;
+}
+
+
+nav {
+margin: 0;
+padding: 0;
+}
+nav ul { list-style: none; display: flex; gap: 22px; margin: 0; padding: 0; }
+nav a {
+text-decoration: none;
+font-family: inherit;
+font-size: 16px;
+color: var(--text);
+padding: 6px 2px;
+transition: color .15s ease;
+}
+nav a:hover { color: var(--accent-hover); }
+
+
+
+main { 
+  margin: 0; 
+  padding: 0 0 40px;
+}
+
+section { margin: 36px 0; }
+
+h2 { font-size: 24px; margin: 0 0 12px 0; }
+
+p  { margin: 0 0 14px 0; color: var(--text); }
+
+.muted { color: var(--muted); }
+
+
+.food-img { width: 100%; height: auto; display: block; border-radius: 12px; } 
+
+
+.benefits { padding-left: 18px; }
+.benefits li { margin: 6px 0; }
+
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; } 
+thead th { background: #fafafa; }
+th, td {
+  border: 1px solid var(--border); 
+  padding: 12px; 
+  text-align: left; 
+}
+
+td.num, th.num { text-align: center; }
+
+td.price, th.price { text-align: right; }
+
+
+footer {
+  background-color: #000;
+  color: #fff;
+  margin: 40px 0 0;
+  padding: 28px 0;
+}
+
+.footer-title { margin: 0 0 8px; font-size: 20px; color: #fff; }
+
+footer p { color: #fff; }
+
+footer a,
+footer a:link,
+footer a:visited {
+  color: #fff;
+  text-decoration: none;
+}
+
+footer a:hover,
+footer a:focus,
+footer a:active {
+  color: #fff;
+  text-decoration: underline;
+}
+
+
+@media (max-width: 600px) {
+  h1.logo { font-size: 22px; }
+  h2 { font-size: 20px; }
+}

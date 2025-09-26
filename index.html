@@ -14,10 +14,10 @@
     <div class="container header-inner">
       <h1 class="logo">Food Construct</h1>
       <nav aria-label="Основная навигация">
-        <ul>
-          <li><a href="#about">О нас</a></li>
-          <li><a href="#constructor">Собрать ланч</a></li>
-          <li><a href="#orders">Заказы</a></li>
+        <ul class="menu">
+          <li><a id="active" href="index.html#about">О нас</a></li>
+          <li><a href="lunch.html">Собрать ланч</a></li>
+          <li><a href="index.html#orders">Заказы</a></li>
           <li><a href="#contacts">Контакты</a></li>
         </ul>
       </nav>
@@ -51,10 +51,10 @@
           <table>
             <thead>
               <tr>
-                <th class="num" >#</th>
-                <th >Название</th>
-                <th class="num">Кол-во заказов в неделю</th>
-                <th class="price" >Цена</th>
+                <th class="num" scope="col">#</th>
+                <th scope="col">Название</th>
+                <th class="num" scope="col">Кол-во заказов в неделю</th>
+                <th class="price" scope="col">Цена</th>
               </tr>
             </thead>
             <tbody>
@@ -91,11 +91,6 @@
             </tbody>
           </table>
         </div>
-      </section>
-
-      <section id="constructor" aria-labelledby="constructor-title">
-        <h2 id="constructor-title">Собрать ланч</h2>
-        <p class="muted">Здесь позже появится конструктор ланча с выбором блюд и оформлением заказа.</p>
       </section>
     </div>
   </main>

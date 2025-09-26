@@ -1,0 +1,51 @@
+.menu-section { margin: 36px 0; }
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.dish-card {
+  display: flex;
+  flex-direction: column;            
+  background: #fff;                  
+  padding: 30px 40px;                
+  border-radius: 35px;               
+  border: 2px solid transparent;     
+  filter: drop-shadow(17px 19px 24px rgba(0,0,0,0.13));
+  cursor: pointer;                   
+}
+.dish-card img {
+  width: 100%;                       
+  height: auto;
+  border-radius: 35px;
+  display: block;
+}
+
+.price { font-size: 18px; font-weight: 700; margin-top: 14px; }
+.name  { font-size: 18px; margin: 2px 0 0; }
+.card-bottom { margin-top: auto; }   
+.weight { color: #777; margin: 12px 0; }
+
+.btn {
+  background: #f1eee9;              
+  padding: 10px 30px;               
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;                   
+  font: inherit;
+}
+
+
+.dish-card:hover { border-color: tomato; }
+.dish-card:hover .btn { background: tomato; color: #fff; }
+
+@media (max-width: 800px) {
+  .menu-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  h1.logo { text-align: center; }
+  .menu-section > h2 { text-align: center; }
+  .menu-grid { grid-template-columns: 1fr; }
+}

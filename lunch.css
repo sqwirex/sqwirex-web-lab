@@ -1,51 +1,60 @@
-.menu-section { margin: 36px 0; }
+.menu-section{ margin: 36px 0; }
 
-.menu-grid {
+
+.menu-grid{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 
-.dish-card {
+
+.dish-card{
   display: flex;
   flex-direction: column;            
-  background: #fff;                  
-  padding: 30px 40px;                
-  border-radius: 35px;               
-  border: 2px solid transparent;     
-  filter: drop-shadow(17px 19px 24px rgba(0,0,0,0.13));
-  cursor: pointer;                   
+  background: #fff;
+  padding: 30px 40px;              
+  border-radius: 35px;
+  border: 2px solid transparent;          
+  filter: drop-shadow(17px 19px 24px rgba(0,0,0,.13));
+  cursor: pointer;
+  transition: border-color .15s ease;
 }
-.dish-card img {
+.dish-card img{
   width: 100%;                       
   height: auto;
+  display: block;                         
   border-radius: 35px;
-  display: block;
 }
 
-.price { font-size: 18px; font-weight: 700; margin-top: 14px; }
-.name  { font-size: 18px; margin: 2px 0 0; }
-.card-bottom { margin-top: auto; }   
-.weight { color: #777; margin: 12px 0; }
+.price{ font-size: 18px; font-weight: 700; margin-top: 14px; }
+.name { font-size: 18px; margin: 2px 0 0; }
 
-.btn {
-  background: #f1eee9;              
-  padding: 10px 30px;               
+.card-bottom{ margin-top: auto; }
+
+.weight{ color: #777; margin: 12px 0; }
+
+.btn{
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: #f1eee9;                    
+  padding: 10px 30px;                    
   border: none;
   border-radius: 10px;
-  cursor: pointer;                   
+  cursor: pointer;
   font: inherit;
+  margin-top: 8px;                         
+  transition: background-color .15s ease, color .15s ease;
 }
 
+.dish-card:hover{ border-color: var(--accent); }
+.dish-card:hover .btn{ background: var(--accent); color: #fff; }
 
-.dish-card:hover { border-color: tomato; }
-.dish-card:hover .btn { background: tomato; color: #fff; }
-
-@media (max-width: 800px) {
-  .menu-grid { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 800px){
+  .menu-grid{ grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 600px) {
-  h1.logo { text-align: center; }
-  .menu-section > h2 { text-align: center; }
-  .menu-grid { grid-template-columns: 1fr; }
+
+@media (max-width: 600px){
+  .menu-grid{ grid-template-columns: 1fr; }
+  .menu-section > h2{ text-align: center; }
 }

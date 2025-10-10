@@ -9,7 +9,7 @@ function minDigit(x) {
     const d = x % 10;
     if (d < min) min = d;
     if (min === 0) return 0;
-    x = (x - d) / 10; // без Math.floor
+    x = (x - d) / 10;
   }
   return min;
 }

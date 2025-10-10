@@ -4,9 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Собрать ланч — Food Construct</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="lunch.css">
 </head>
@@ -29,101 +31,17 @@
     <div class="container">
       <section class="menu-section" aria-labelledby="soups-title">
         <h2 id="soups-title">Выберите суп</h2>
-        <div class="menu-grid">
-          <div class="dish-card">
-            <img src="images/soup-gazpacho.jpg" alt="Суп гаспачо">
-            <p class="price">195₽</p>
-            <p class="name">Гаспачо</p>
-            <div class="card-bottom">
-              <p class="weight">350 г</p>
-              <button class="btn" type="button">Добавить</button>
-            </div>
-          </div>
-          <div class="dish-card">
-            <img src="images/soup-mushroom.jpg" alt="Грибной суп‑пюре">
-            <p class="price">185₽</p>
-            <p class="name">Грибной суп‑пюре</p>
-            <div class="card-bottom">
-              <p class="weight">330 г</p>
-              <button class="btn" type="button">Добавить</button>
-            </div>
-          </div>
-          <div class="dish-card">
-            <img src="images/soup-norwegian.jpg" alt="Норвежский сливочный суп">
-            <p class="price">270₽</p>
-            <p class="name">Норвежский суп</p>
-            <div class="card-bottom">
-              <p class="weight">330 г</p>
-              <button class="btn" type="button">Добавить</button>
-            </div>
-          </div>
-        </div>
+        <div class="menu-grid" data-category="soup"></div>
       </section>
 
       <section class="menu-section" aria-labelledby="mains-title">
         <h2 id="mains-title">Выберите главное блюдо</h2>
-        <div class="menu-grid">
-          <div class="dish-card">
-            <img src="images/main-potatoes.jpg" alt="Жареная картошка с грибами">
-            <p class="price">150₽</p>
-            <p class="name">Жареная картошка с грибами</p>
-            <div class="card-bottom">
-              <p class="weight">250 г</p>
-              <button class="btn" type="button">Добавить</button>
-            </div>
-          </div>
-          <div class="dish-card">
-            <img src="images/main-lasagna.jpg" alt="Лазанья">
-            <p class="price">385₽</p>
-            <p class="name">Лазанья</p>
-            <div class="card-bottom">
-              <p class="weight">310 г</p>
-              <button class="btn" type="button">Добавить</button>
-            </div>
-          </div>
-          <div class="dish-card">
-            <img src="images/main-chicken-cutlets.jpg" alt="Котлеты из курицы с картофельным пюре">
-            <p class="price">225₽</p>
-            <p class="name">Котлеты из курицы с картофельным пюре</p>
-            <div class="card-bottom">
-              <p class="weight">280 г</p>
-              <button class="btn" type="button">Добавить</button>
-            </div>
-          </div>
-        </div>
+        <div class="menu-grid" data-category="main"></div>
       </section>
 
       <section class="menu-section" aria-labelledby="drinks-title">
         <h2 id="drinks-title">Выберите напиток</h2>
-        <div class="menu-grid">
-          <div class="dish-card">
-            <img src="images/juice-orange.jpg" alt="Апельсиновый сок">
-            <p class="price">120₽</p>
-            <p class="name">Апельсиновый сок</p>
-            <div class="card-bottom">
-              <p class="weight">300 мл</p>
-              <button class="btn" type="button">Добавить</button>
-            </div>
-          </div>
-          <div class="dish-card">
-            <img src="images/juice-apple.jpg" alt="Яблочный сок">
-            <p class="price">90₽</p>
-            <p class="name">Яблочный сок</p>
-            <div class="card-bottom">
-              <p class="weight">300 мл</p>
-              <button class="btn" type="button">Добавить</button>
-            </div>
-          </div>
-          <div class="dish-card">
-            <img src="images/juice-carrot.jpg" alt="Морковный сок">
-            <p class="price">110₽</p>
-            <p class="name">Морковный сок</p>
-            <div class="card-bottom">
-              <p class="weight">300 мл</p>
-              <button class="btn" type="button">Добавить</button>
-            </div>
-          </div>
-        </div>
+        <div class="menu-grid" data-category="drink"></div>
       </section>
     </div>
   </main>
@@ -132,39 +50,40 @@
     <div class="container">
       <h2 id="order-title" class="order-title">Сделать заказ</h2>
 
-      <form class="order-form" action="https://httpbin.org/post" method="post">
+      <form class="order-form" action="https://httpbin.org/post" method="post" target="_blank">
         <div class="order-grid">
           <fieldset class="order-col">
             <legend>Ваш заказ</legend>
 
-            <div class="form-row">
-              <label for="soup">Суп</label>
-              <select id="soup" name="soup" required>
-                <option value="" selected>-- Выберите суп --</option>
-                <option value="gaspacho">Гаспачо</option>
-                <option value="mushroom_puree">Грибной суп‑пюре</option>
-                <option value="norwegian">Норвежский суп</option>
-              </select>
+            <p class="summary-empty" id="summaryEmpty"><strong>Ничего не выбрано</strong></p>
+
+            <div class="summary-category" data-cat="soup" hidden>
+              <h3>Суп</h3>
+              <p class="summary-line" hidden>
+                <span class="summary-name"></span> <span class="summary-price"></span>
+              </p>
+              <p class="summary-none" hidden>Блюдо не выбрано</p>
             </div>
 
-            <div class="form-row">
-              <label for="main">Главное блюдо</label>
-              <select id="main" name="main" required>
-                <option value="" selected>-- Выберите главное блюдо --</option>
-                <option value="potatoes_mushrooms">Жареная картошка с грибами</option>
-                <option value="lasagna">Лазанья</option>
-                <option value="chicken_cutlets_puree">Котлеты из курицы с картофельным пюре</option>
-              </select>
+            <div class="summary-category" data-cat="main" hidden>
+              <h3>Главное блюдо</h3>
+              <p class="summary-line" hidden>
+                <span class="summary-name"></span> <span class="summary-price"></span>
+              </p>
+              <p class="summary-none" hidden>Блюдо не выбрано</p>
             </div>
 
-            <div class="form-row">
-              <label for="drink">Напиток</label>
-              <select id="drink" name="drink" required>
-                <option value="" selected>-- Выберите напиток --</option>
-                <option value="orange_juice">Апельсиновый сок</option>
-                <option value="apple_juice">Яблочный сок</option>
-                <option value="carrot_juice">Морковный сок</option>
-              </select>
+            <div class="summary-category" data-cat="drink" hidden>
+              <h3>Напиток</h3>
+              <p class="summary-line" hidden>
+                <span class="summary-name"></span> <span class="summary-price"></span>
+              </p>
+              <p class="summary-none" hidden>Напиток не выбран</p>
+            </div>
+
+            <div class="summary-total" id="summaryTotal" hidden>
+              <h3>Стоимость заказа</h3>
+              <p class="summary-sum"><span id="totalSum">0</span>₽</p>
             </div>
 
             <div class="form-row">
@@ -229,9 +148,12 @@
   <footer id="contacts" aria-labelledby="contacts-title">
     <div class="container">
       <h2 id="contacts-title" class="footer-title">Контакты</h2>
-      <p>Позвонить нам: <a href="tel:+7-000-000-00-00">+7‑000‑000‑00‑00</a></p>
+      <p>Позвонить нам: <a href="tel:+7-000-000-00-00">+7-000-000-00-00</a></p>
       <p>Почта: <a href="mailto:hello@foodconstruct.ru">hello@foodconstruct.ru</a></p>
     </div>
   </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/render.js"></script>
 </body>
 </html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Math Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="card">
+    <h1>Math Game</h1>
+    <div class="row">
+      <div><strong>Уровень:</strong> <span id="levelName">начальный</span></div>
+      <div><strong>Осталось времени:</strong> <span id="timer">5:00</span></div>
+    </div>
+
+    <div class="row">
+      <div><strong>Правильно:</strong> <span id="correct">0</span></div>
+      <div><strong>Неправильно:</strong> <span id="wrong">0</span></div>
+      <div><strong>Всего:</strong> <span id="total">0</span>/10</div>
+    </div>
+
+    <div id="question" class="question">—</div>
+
+    <input id="answer" type="text" placeholder="Введите ответ">
+    <button id="submit">Ответить</button>
+
+    <div id="feedback" class="feedback"></div>
+
+    <div class="controls">
+      <button id="restart" class="secondary">Перезапустить</button>
+      <button id="quit" class="secondary">Выйти</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

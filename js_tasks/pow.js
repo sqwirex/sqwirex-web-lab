@@ -11,7 +11,7 @@ function pow(x, n) {
 }
 
 // Примеры:
-// console.log(pow(2, 10)); // 1024
+console.log(pow(2, 10)); // 1024
 // console.log(pow(5, 1));  // 5
 
 if (typeof module !== "undefined") module.exports = { pow };

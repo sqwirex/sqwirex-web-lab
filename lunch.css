@@ -27,7 +27,7 @@
 .filter-btn:hover,
 .filter-btn.active{
   border-color: var(--accent);      
-  background-color: #d5b9ab;        
+  background-color: #e5d6ce;        
 }
 .filter-btn:focus-visible{
   outline: 3px solid color-mix(in oklab, var(--accent) 40%, white);

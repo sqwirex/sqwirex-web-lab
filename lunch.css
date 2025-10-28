@@ -1,14 +1,13 @@
-/* ===== Общие переменные (с запасным значением) ===== */
+/* ===== Акцентный цвет (зелёный) ===== */
 :root{
-  /* если есть в styles.css — возьмётся оттуда; иначе будет tomato */
-  --accent: tomato;
+  --accent: #1e8f38; /* можно поменять на свой зелёный */
 }
 
 /* ===== Секции меню ===== */
 .menu-section{ margin: 36px 0; }
 .menu-section > h2{ margin: 0 0 12px; }
 
-/* Фильтры (кнопки) */
+/* ===== Фильтры ===== */
 .filters{
   display: flex;
   flex-wrap: wrap;
@@ -17,19 +16,26 @@
 }
 .filter-btn{
   appearance: none;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--accent, tomato);
+  background: #fff;
+  color: var(--accent);
   font: inherit;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 9999px;
+  border: 1px solid transparent;     /* по умолчанию без рамки */
   cursor: pointer;
-  line-height: 1;
+  line-height: 1.2;
+  text-decoration: none;              /* убираем underline */
+  transition: border-color .15s ease, background-color .15s ease;
 }
-.filter-btn:hover{ text-decoration: underline; }
+.filter-btn:hover,
 .filter-btn.active{
-  border-color: var(--accent, tomato);
-  text-decoration: none;
+  border-color: var(--accent);        /* зелёная обводка при hover/active */
+  background-color: #f4fbf6;          /* лёгкий зелёный фон */
+}
+.filter-btn:focus-visible{
+  outline: 3px solid color-mix(in oklab, var(--accent) 40%, white);
+  outline-offset: 2px;
+  border-color: var(--accent);
 }
 
 /* ===== GRID карточек ===== */
@@ -51,8 +57,8 @@
   cursor: pointer;
   transition: border-color .15s ease, transform .15s ease;
 }
-.dish-card:hover{ border-color: var(--accent, tomato); }
-.dish-card.selected{ border-color: var(--accent, tomato); }
+.dish-card:hover{ border-color: var(--accent); }
+.dish-card.selected{ border-color: var(--accent); }
 
 .dish-card img{
   width: 100%;
@@ -82,7 +88,7 @@
 }
 .dish-card:hover .btn,
 .dish-card.selected .btn{
-  background: var(--accent, tomato);
+  background: var(--accent);
   color: #fff;
 }
 
@@ -90,7 +96,7 @@
 .order-wrap{ padding: 12px 0 40px; }
 .order-title{ text-align: center; margin: 6px 0 24px; }
 
-.order-form{ accent-color: var(--accent, tomato); }
+.order-form{ accent-color: var(--accent); }
 .order-grid{
   display: grid;
   grid-template-columns: repeat(2, minmax(280px, 1fr));
@@ -131,12 +137,12 @@ legend{ font-weight: 600; margin-bottom: 16px; }
   padding:8px 16px; border-radius:6px; cursor:pointer;
 }
 .btn-primary{
-  background:#fff; border:1px solid var(--accent, tomato);
-  color: var(--accent, tomato);
+  background:#fff; border:1px solid var(--accent);
+  color: var(--accent);
   width:auto; padding:8px 16px; border-radius:6px; cursor:pointer;
 }
 .btn-secondary:hover{ background:#f5f5f5; }
-.btn-primary:hover{ background: var(--accent, tomato); color:#fff; }
+.btn-primary:hover{ background: var(--accent); color:#fff; }
 
 /* ===== Сводка «Ваш заказ» ===== */
 .summary-empty{ margin: 6px 0 16px; }
@@ -151,7 +157,6 @@ legend{ font-weight: 600; margin-bottom: 16px; }
 @media (max-width: 800px){
   .menu-grid{ grid-template-columns: repeat(2, 1fr); }
 }
-
 @media (max-width: 600px){
   .menu-section > h2{ text-align:center; }
   .filters{ justify-content: center; }

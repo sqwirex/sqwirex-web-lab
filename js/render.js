@@ -1,42 +1,36 @@
 // js/render.js
 (() => {
-  // ----- Настройки -----
-  const CATS = ['soup', 'main', 'salad', 'drink', 'dessert']; // порядок категорий
-
-  // Локализованный компаратор для алфавитной сортировки по имени
+  // Сортировка по алфавиту (учитываем русскую локаль)
   const byName = (a, b) => a.name.localeCompare(b.name, 'ru');
 
-  // Карты DOM-контейнеров сеток, фильтров и блоков сводки
-  const grids = Object.fromEntries(
-    CATS.map(cat => [cat, document.querySelector(`.menu-grid[data-category="${cat}"]`)])
-  );
-  const filterBars = Object.fromEntries(
-    CATS.map(cat => [cat, document.querySelector(`.filters[data-category="${cat}"]`)])
-  );
+  // Контейнеры сеток
+  const grids = {
+    soup:    document.querySelector('.menu-grid[data-category="soup"]'),
+    main:    document.querySelector('.menu-grid[data-category="main"]'),
+    salad:   document.querySelector('.menu-grid[data-category="salad"]'),
+    drink:   document.querySelector('.menu-grid[data-category="drink"]'),
+    dessert: document.querySelector('.menu-grid[data-category="dessert"]'),
+  };
 
-  // Состояние: выбранные блюда и активные фильтры
-  const selected = Object.fromEntries(CATS.map(c => [c, null]));
-  const activeFilter = Object.fromEntries(CATS.map(c => [c, null]));
+  // Текущий фильтр по каждой категории (null = показывать всё)
+  const currentFilters = { soup: null, main: null, salad: null, drink: null, dessert: null };
 
-  // Узлы сводки
-  const summaryEmpty = document.getElementById('summaryEmpty');
-  const totalBlock   = document.getElementById('summaryTotal');
-  const totalSumEl   = document.getElementById('totalSum');
-  const summaryBlocks = Object.fromEntries(
-    CATS.map(cat => [cat, document.querySelector(`.summary-category[data-cat="${cat}"]`)])
+  // Состояние выбранных позиций
+  const selected = { soup: null, main: null, salad: null, drink: null, dessert: null };
+
+  // Элементы блока "Ваш заказ"
+  const cats = ['soup', 'main', 'salad', 'drink', 'dessert'];
+  const summaryEmpty  = document.getElementById('summaryEmpty');
+  const totalBlock    = document.getElementById('summaryTotal');
+  const totalSumEl    = document.getElementById('totalSum');
+  const catBlocks = Object.fromEntries(
+    cats.map(cat => [cat, document.querySelector(`.summary-category[data-cat="${cat}"]`)])
   );
-
-  // Текст "ничего не выбрано" по категориям
-  const noneText = (cat) => ({
-    drink:   'Напиток не выбран',
-    dessert: 'Десерт не выбран',
-    salad:   'Салат/стартер не выбран',
-  }[cat] || 'Блюдо не выбрано');
 
   const rub = n => `${n}₽`;
 
-  // ----- Рендер карточки -----
-  function renderCard(dish) {
+  // Создание карточки
+  function renderCard(dish){
     const card = document.createElement('div');
     card.className = 'dish-card';
     card.dataset.dish = dish.keyword;
@@ -52,122 +46,119 @@
       </div>
     `;
 
-    const pick = () => selectDish(dish, card);
+    const choose = () => selectDish(dish, card);
 
     card.addEventListener('click', (e) => {
-      if (e.target.closest('.btn') || e.currentTarget === card) pick();
+      if (e.target.closest('.btn') || e.currentTarget === card) choose();
     });
     card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(); }
     });
 
     return card;
   }
 
-  // ----- Выбор блюда -----
-  function selectDish(dish, cardEl) {
-    // снять выделение в категории
-    grids[dish.category]?.querySelectorAll('.dish-card.selected')
-      .forEach(el => el.classList.remove('selected'));
-
-    // отметить текущую
+  // Выбор блюда
+  function selectDish(dish, cardEl){
+    const grid = grids[dish.category];
+    grid?.querySelectorAll('.dish-card.selected').forEach(c => c.classList.remove('selected'));
     cardEl?.classList.add('selected');
     selected[dish.category] = dish;
-
     updateSummary();
   }
 
-  // ----- Сводка «Ваш заказ» -----
-  function updateSummary() {
-    const any = CATS.some(cat => selected[cat]);
-
+  // Обновление блока "Ваш заказ"
+  function updateSummary(){
+    const any = cats.some(c => selected[c]);
     summaryEmpty.hidden = any;
-    Object.values(summaryBlocks).forEach(b => b.hidden = !any);
+    Object.values(catBlocks).forEach(b => b.hidden = !any);
     totalBlock.hidden = !any;
     if (!any) return;
 
     let total = 0;
+    cats.forEach(cat => {
+      const block   = catBlocks[cat];
+      const line    = block.querySelector('.summary-line');
+      const none    = block.querySelector('.summary-none');
+      const nameEl  = block.querySelector('.summary-name');
+      const priceEl = block.querySelector('.summary-price');
+      const dish    = selected[cat];
 
-    CATS.forEach(cat => {
-      const container = summaryBlocks[cat];
-      const line = container.querySelector('.summary-line');
-      const none = container.querySelector('.summary-none');
-      const nameEl = container.querySelector('.summary-name');
-      const priceEl = container.querySelector('.summary-price');
-
-      const dish = selected[cat];
-      if (dish) {
-        nameEl.textContent = dish.name;
+      if (dish){
+        nameEl.textContent  = dish.name;
         priceEl.textContent = rub(dish.price);
-        line.hidden = false;
-        none.hidden = true;
+        line.hidden = false; none.hidden = true;
         total += dish.price;
       } else {
         line.hidden = true;
-        none.textContent = noneText(cat);
-        none.hidden = false;
+        none.textContent = (cat === 'drink') ? 'Напиток не выбран' : 'Блюдо не выбрано';
+        none.hidden = true; // показываем «не выбрано» только когда есть хоть один выбор
       }
     });
-
     totalSumEl.textContent = String(total);
   }
 
-  // ----- Рендер категории с учётом фильтра -----
-  function renderCategory(cat) {
+  // Рендер одной категории с учётом фильтра
+  function renderCategory(cat){
     const grid = grids[cat];
-    grid.innerHTML = '';
+    if (!grid) return;
 
     const list = window.DISHES
-      .filter(d => d.category === cat)
-      .filter(d => !activeFilter[cat] || d.kind === activeFilter[cat])
+      .filter(d => d.category === cat && (!currentFilters[cat] || d.kind === currentFilters[cat]))
       .sort(byName);
 
-    list.forEach(dish => grid.appendChild(renderCard(dish)));
+    grid.innerHTML = '';
+    list.forEach(d => grid.appendChild(renderCard(d)));
 
-    // восстановить подсветку, если выбранное блюдо всё ещё на экране
-    const chosen = selected[cat];
-    if (chosen) {
-      const chosenEl = grid.querySelector(`.dish-card[data-dish="${chosen.keyword}"]`);
-      if (chosenEl) chosenEl.classList.add('selected');
+    // Если выбранное блюдо не проходит текущий фильтр — сбросить выбор
+    if (selected[cat] && !list.some(d => d.keyword === selected[cat].keyword)) {
+      selected[cat] = null;
+      updateSummary();
     }
   }
 
-  function renderAll() { CATS.forEach(renderCategory); }
+  // Инициализация фильтров в каждой секции
+  document.querySelectorAll('.menu-section').forEach(section => {
+    const grid = section.querySelector('.menu-grid');
+    if (!grid) return;
 
-  // ----- Обработчики фильтров -----
-  CATS.forEach(cat => {
-    const bar = filterBars[cat];
-    if (!bar) return;
+    const cat = grid.dataset.category;           // soup | main | salad | drink | dessert
+    const filtersWrap = section.querySelector('.filters');
 
-    bar.addEventListener('click', (e) => {
+    // начальный рендер
+    renderCategory(cat);
+
+    if (!filtersWrap) return;
+
+    filtersWrap.addEventListener('click', (e) => {
       const btn = e.target.closest('.filter-btn');
       if (!btn) return;
 
-      // переключение: если уже активна — снимаем, иначе ставим и снимаем с соседей
+      const kind = btn.dataset.kind;             // fish | meat | veg | cold | hot | small | medium | large
+
+      // Клик по уже активной — снимаем фильтр
       if (btn.classList.contains('active')) {
         btn.classList.remove('active');
-        activeFilter[cat] = null;
+        currentFilters[cat] = null;
       } else {
-        bar.querySelectorAll('.filter-btn.active').forEach(b => b.classList.remove('active'));
+        // Переключить активную
+        filtersWrap.querySelectorAll('.filter-btn.active').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        activeFilter[cat] = btn.dataset.kind || null;
+        currentFilters[cat] = kind;
       }
+
       renderCategory(cat);
     });
   });
 
-  // ----- Сброс формы: очищаем выбор -----
+  // Сброс формы: очистить выбор и подсветки
   const form = document.querySelector('.order-form');
-  form?.addEventListener('reset', () => {
-    // очистить выбранные блюда
-    CATS.forEach(cat => { selected[cat] = null; });
-    // снять подсветку
-    Object.values(grids).forEach(g =>
-      g.querySelectorAll('.dish-card.selected').forEach(el => el.classList.remove('selected'))
-    );
-    updateSummary();
-  });
-
-  // Первичная отрисовка
-  renderAll();
+  if (form){
+    form.addEventListener('reset', () => {
+      Object.values(grids).forEach(g => g?.querySelectorAll('.dish-card.selected')
+        .forEach(c => c.classList.remove('selected')));
+      cats.forEach(cat => selected[cat] = null);
+      updateSummary();
+    });
+  }
 })();

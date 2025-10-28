@@ -1,13 +1,10 @@
-/* ===== Акцентный цвет (зелёный) ===== */
 :root{
-  --accent: tomato; /* можно поменять на свой зелёный */
+  --accent: tomato; 
 }
 
-/* ===== Секции меню ===== */
 .menu-section{ margin: 36px 0; }
 .menu-section > h2{ margin: 0 0 12px; }
 
-/* ===== Фильтры ===== */
 .filters{
   display: flex;
   flex-wrap: wrap;
@@ -21,16 +18,16 @@
   font: inherit;
   padding: 6px 14px;
   border-radius: 9999px;
-  border: 1px solid transparent;     /* по умолчанию без рамки */
+  border: 1px solid transparent;    
   cursor: pointer;
   line-height: 1.2;
-  text-decoration: none;              /* убираем underline */
+  text-decoration: none;          
   transition: border-color .15s ease, background-color .15s ease;
 }
 .filter-btn:hover,
 .filter-btn.active{
-  border-color: var(--accent);        /* зелёная обводка при hover/active */
-  background-color: #f4fbf6;          /* лёгкий зелёный фон */
+  border-color: var(--accent);      
+  background-color: #d5b9ab;        
 }
 .filter-btn:focus-visible{
   outline: 3px solid color-mix(in oklab, var(--accent) 40%, white);
@@ -38,21 +35,21 @@
   border-color: var(--accent);
 }
 
-/* ===== GRID карточек ===== */
+
 .menu-grid{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 
-/* ===== Карточка блюда ===== */
+
 .dish-card{
   display: flex;
   flex-direction: column;
   background: #fff;
-  padding: 30px 40px;                 /* 30 сверху/снизу, 40 слева/справа */
+  padding: 30px 40px;               
   border-radius: 35px;
-  border: 2px solid transparent;      /* чтобы при hover не прыгала */
+  border: 2px solid transparent;      
   filter: drop-shadow(17px 19px 24px rgba(0,0,0,.13));
   cursor: pointer;
   transition: border-color .15s ease, transform .15s ease;
@@ -63,14 +60,14 @@
 .dish-card img{
   width: 100%;
   height: auto;
-  display: block;                      /* убираем зазор снизу у inline */
+  display: block;                     
   border-radius: 35px;
 }
 
 .price{ font-size: 18px; font-weight: 700; margin: 14px 0 0; }
 .name { font-size: 18px; margin: 2px 0 0; }
 
-.card-bottom{ margin-top: auto; }      /* прижимает низ карточки */
+.card-bottom{ margin-top: auto; }     
 .weight{ color: #777; margin: 12px 0; }
 
 .btn{
@@ -81,9 +78,9 @@
   cursor: pointer;
   font: inherit;
   display: block;
-  width: 100%;                         /* ширина = ширине контента/картинки */
+  width: 100%;                        
   text-align: center;
-  margin-top: 8px;                     /* обязательный отступ сверху */
+  margin-top: 8px;                    
   transition: background-color .15s ease, color .15s ease;
 }
 .dish-card:hover .btn,
@@ -92,7 +89,7 @@
   color: #fff;
 }
 
-/* ===== Форма заказа ===== */
+
 .order-wrap{ padding: 12px 0 40px; }
 .order-title{ text-align: center; margin: 6px 0 24px; }
 
@@ -144,7 +141,6 @@ legend{ font-weight: 600; margin-bottom: 16px; }
 .btn-secondary:hover{ background:#f5f5f5; }
 .btn-primary:hover{ background: var(--accent); color:#fff; }
 
-/* ===== Сводка «Ваш заказ» ===== */
 .summary-empty{ margin: 6px 0 16px; }
 .summary-category{ margin: 18px 0; }
 .summary-category h3{ margin:0 0 6px; font-size:18px; }
@@ -153,7 +149,6 @@ legend{ font-weight: 600; margin-bottom: 16px; }
 .summary-total h3{ margin:12px 0 6px; font-size:18px; }
 .summary-sum{ margin:0; font-size:28px; font-weight:700; }
 
-/* ===== Адаптив ===== */
 @media (max-width: 800px){
   .menu-grid{ grid-template-columns: repeat(2, 1fr); }
 }

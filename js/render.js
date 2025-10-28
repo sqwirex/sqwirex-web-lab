@@ -1,9 +1,6 @@
-// js/render.js
 (() => {
-  // Сортировка по алфавиту (учитываем русскую локаль)
   const byName = (a, b) => a.name.localeCompare(b.name, 'ru');
 
-  // Контейнеры сеток
   const grids = {
     soup:    document.querySelector('.menu-grid[data-category="soup"]'),
     main:    document.querySelector('.menu-grid[data-category="main"]'),
@@ -12,13 +9,11 @@
     dessert: document.querySelector('.menu-grid[data-category="dessert"]'),
   };
 
-  // Текущий фильтр по каждой категории (null = показывать всё)
   const currentFilters = { soup: null, main: null, salad: null, drink: null, dessert: null };
 
-  // Состояние выбранных позиций
   const selected = { soup: null, main: null, salad: null, drink: null, dessert: null };
 
-  // Элементы блока "Ваш заказ"
+
   const cats = ['soup', 'main', 'salad', 'drink', 'dessert'];
   const summaryEmpty  = document.getElementById('summaryEmpty');
   const totalBlock    = document.getElementById('summaryTotal');
@@ -29,7 +24,7 @@
 
   const rub = n => `${n}₽`;
 
-  // Создание карточки
+ 
   function renderCard(dish){
     const card = document.createElement('div');
     card.className = 'dish-card';
@@ -58,7 +53,7 @@
     return card;
   }
 
-  // Выбор блюда
+  
   function selectDish(dish, cardEl){
     const grid = grids[dish.category];
     grid?.querySelectorAll('.dish-card.selected').forEach(c => c.classList.remove('selected'));
@@ -67,7 +62,7 @@
     updateSummary();
   }
 
-  // Обновление блока "Ваш заказ"
+
   function updateSummary(){
     const any = cats.some(c => selected[c]);
     summaryEmpty.hidden = any;
@@ -92,13 +87,12 @@
       } else {
         line.hidden = true;
         none.textContent = (cat === 'drink') ? 'Напиток не выбран' : 'Блюдо не выбрано';
-        none.hidden = true; // показываем «не выбрано» только когда есть хоть один выбор
+        none.hidden = true; 
       }
     });
     totalSumEl.textContent = String(total);
   }
 
-  // Рендер одной категории с учётом фильтра
   function renderCategory(cat){
     const grid = grids[cat];
     if (!grid) return;
@@ -110,22 +104,20 @@
     grid.innerHTML = '';
     list.forEach(d => grid.appendChild(renderCard(d)));
 
-    // Если выбранное блюдо не проходит текущий фильтр — сбросить выбор
     if (selected[cat] && !list.some(d => d.keyword === selected[cat].keyword)) {
       selected[cat] = null;
       updateSummary();
     }
   }
 
-  // Инициализация фильтров в каждой секции
+  
   document.querySelectorAll('.menu-section').forEach(section => {
     const grid = section.querySelector('.menu-grid');
     if (!grid) return;
 
-    const cat = grid.dataset.category;           // soup | main | salad | drink | dessert
+    const cat = grid.dataset.category;          
     const filtersWrap = section.querySelector('.filters');
 
-    // начальный рендер
     renderCategory(cat);
 
     if (!filtersWrap) return;
@@ -134,14 +126,12 @@
       const btn = e.target.closest('.filter-btn');
       if (!btn) return;
 
-      const kind = btn.dataset.kind;             // fish | meat | veg | cold | hot | small | medium | large
+      const kind = btn.dataset.kind;           
 
-      // Клик по уже активной — снимаем фильтр
       if (btn.classList.contains('active')) {
         btn.classList.remove('active');
         currentFilters[cat] = null;
       } else {
-        // Переключить активную
         filtersWrap.querySelectorAll('.filter-btn.active').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentFilters[cat] = kind;
@@ -151,7 +141,6 @@
     });
   });
 
-  // Сброс формы: очистить выбор и подсветки
   const form = document.querySelector('.order-form');
   if (form){
     form.addEventListener('reset', () => {

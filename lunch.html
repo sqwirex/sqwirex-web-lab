@@ -5,17 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Собрать ланч — Food Construct</title>
 
-  <!-- Google Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Общие стили и стили для страницы ланча -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="lunch.css">
 </head>
 <body>
-  <!-- Шапка -->
   <header>
     <div class="container header-inner">
       <h1 class="logo">Food Construct</h1>
@@ -30,26 +27,21 @@
     </div>
   </header>
 
-  <!-- Контент -->
   <main>
     <div class="container">
 
-      <!-- СУПЫ -->
       <section class="menu-section" aria-labelledby="soups-title">
         <h2 id="soups-title">Выберите суп</h2>
 
-        <!-- Фильтры -->
         <div class="filters" role="group" aria-label="Фильтр супов">
           <button class="filter-btn" type="button" data-kind="fish">рыбный</button>
           <button class="filter-btn" type="button" data-kind="meat">мясной</button>
           <button class="filter-btn" type="button" data-kind="veg">вегетарианский</button>
         </div>
 
-        <!-- Грид (JS заполнит) -->
         <div class="menu-grid" data-category="soup"></div>
       </section>
 
-      <!-- ГЛАВНОЕ БЛЮДО -->
       <section class="menu-section" aria-labelledby="mains-title">
         <h2 id="mains-title">Выберите главное блюдо</h2>
 
@@ -62,7 +54,6 @@
         <div class="menu-grid" data-category="main"></div>
       </section>
 
-      <!-- САЛАТЫ / СТАРТЕРЫ -->
       <section class="menu-section" aria-labelledby="salads-title">
         <h2 id="salads-title">Выберите салат или стартер</h2>
 
@@ -75,7 +66,6 @@
         <div class="menu-grid" data-category="salad"></div>
       </section>
 
-      <!-- НАПИТКИ -->
       <section class="menu-section" aria-labelledby="drinks-title">
         <h2 id="drinks-title">Выберите напиток</h2>
 
@@ -87,7 +77,6 @@
         <div class="menu-grid" data-category="drink"></div>
       </section>
 
-      <!-- ДЕСЕРТЫ -->
       <section class="menu-section" aria-labelledby="desserts-title">
         <h2 id="desserts-title">Выберите десерт</h2>
 
@@ -102,7 +91,6 @@
     </div>
   </main>
 
-  <!-- Форма заказа -->
   <section class="order-wrap" aria-labelledby="order-title">
     <div class="container">
       <h2 id="order-title" class="order-title">Сделать заказ</h2>
@@ -110,7 +98,6 @@
       <form class="order-form" action="https://httpbin.org/post" method="post" target="_blank">
         <div class="order-grid">
 
-          <!-- Левая колонка — сводка выбора -->
           <fieldset class="order-col">
             <legend>Ваш заказ</legend>
 
@@ -167,7 +154,6 @@
             </div>
           </fieldset>
 
-          <!-- Правая колонка — данные клиента -->
           <fieldset class="order-col">
             <legend>Ваши данные</legend>
 
@@ -221,7 +207,6 @@
     </div>
   </section>
 
-  <!-- Футер -->
   <footer id="contacts" aria-labelledby="contacts-title">
     <div class="container">
       <h2 id="contacts-title" class="footer-title">Контакты</h2>
@@ -230,7 +215,6 @@
     </div>
   </footer>
 
-  <!-- Скрипты данных и рендера -->
   <script src="js/data.js"></script>
   <script src="js/render.js"></script>
 </body>

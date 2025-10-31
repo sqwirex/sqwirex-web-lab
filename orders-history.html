@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Заказы — Food Construct</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="lunch.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="brand">Food Construct</div>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="index.html#about">О нас</a>
+        <a href="lunch.html">Собрать ланч</a>
+        <a href="orders.html">Оформить заказ</a>
+        <a id="active" href="orders-history.html">Заказы</a>
+        <a href="index.html#orders">Контакты</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <div class="container">
+      <h1>История заказов</h1>
+
+      <div id="ordersEmpty" hidden>Заказов пока нет.</div>
+
+      <div class="table-wrap">
+        <table class="orders-table" aria-describedby="ordersCaption">
+          <caption id="ordersCaption" class="visually-hidden">Список всех заказов пользователя</caption>
+          <thead>
+            <tr>
+              <th style="width:70px">№</th>
+              <th style="width:200px">Дата оформления</th>
+              <th>Состав заказа</th>
+              <th style="width:120px">Стоимость</th>
+              <th style="width:220px">Время доставки</th>
+              <th style="width:130px">Действия</th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer" aria-labelledby="contacts-title">
+    <div class="container">
+      <h2 id="contacts-title" class="footer-title">Контакты</h2>
+      <p class="footer__copy">Позвонить нам: <a href="tel:+7-000-000-00-00">+7-000-000-00-00</a></p>
+      <p class="footer__copy">Почта: <a href="mailto:hello@foodconstruct.ru">hello@foodconstruct.ru</a></p>
+    </div>
+  </footer>
+
+  <div id="modalRoot"></div>
+
+  <script src="js/orders-history.js"></script>
+</body>
+</html>

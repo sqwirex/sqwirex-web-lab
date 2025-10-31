@@ -1,8 +1,6 @@
 (() => {
- 
   const byName = (a, b) => a.name.localeCompare(b.name, 'ru');
 
- 
   const grids = {
     soup:    document.querySelector('.menu-grid[data-category="soup"]'),
     main:    document.querySelector('.menu-grid[data-category="main"]'),
@@ -11,11 +9,9 @@
     dessert: document.querySelector('.menu-grid[data-category="dessert"]'),
   };
 
- 
   const currentFilters = { soup: null, main: null, salad: null, drink: null, dessert: null };
-  const selected       = { soup: null, main: null, salad: null, drink: null, dessert: null };
+  const selected = { soup: null, main: null, salad: null, drink: null, dessert: null };
 
- 
   const cats = ['soup', 'main', 'salad', 'drink', 'dessert'];
   const summaryEmpty  = document.getElementById('summaryEmpty');
   const totalBlock    = document.getElementById('summaryTotal');
@@ -23,9 +19,9 @@
   const catBlocks = Object.fromEntries(
     cats.map(cat => [cat, document.querySelector(`.summary-category[data-cat="${cat}"]`)])
   );
+
   const rub = n => `${n}₽`;
 
- 
   function renderCard(dish){
     const card = document.createElement('div');
     card.className = 'dish-card';
@@ -54,7 +50,6 @@
     return card;
   }
 
- 
   function selectDish(dish, cardEl){
     const grid = grids[dish.category];
     grid?.querySelectorAll('.dish-card.selected').forEach(c => c.classList.remove('selected'));
@@ -63,7 +58,6 @@
     updateSummary();
   }
 
- 
   function updateSummary(){
     const any = cats.some(c => selected[c]);
     summaryEmpty.hidden = any;
@@ -83,23 +77,23 @@
       if (dish){
         nameEl.textContent  = dish.name;
         priceEl.textContent = rub(dish.price);
-        line.hidden = false; none.hidden = true;
+        line.hidden = false; 
+        none.hidden = true;
         total += dish.price;
       } else {
         line.hidden = true;
-        none.textContent = (cat === 'drink') ? 'Напиток не выбран' : 'Блюдо не выбрано';
-        none.hidden = false;
+        
+        none.hidden = true; 
       }
     });
     totalSumEl.textContent = String(total);
   }
 
- 
   function renderCategory(cat){
     const grid = grids[cat];
     if (!grid) return;
 
-    const list = window.DISHES
+    const list = (window.DISHES || [])
       .filter(d => d.category === cat && (!currentFilters[cat] || d.kind === currentFilters[cat]))
       .sort(byName);
 
@@ -112,7 +106,7 @@
     }
   }
 
- 
+  
   document.querySelectorAll('.menu-section').forEach(section => {
     const grid = section.querySelector('.menu-grid');
     if (!grid) return;
@@ -123,11 +117,13 @@
     renderCategory(cat);
 
     if (!filtersWrap) return;
+
     filtersWrap.addEventListener('click', (e) => {
       const btn = e.target.closest('.filter-btn');
       if (!btn) return;
 
       const kind = btn.dataset.kind;
+
       if (btn.classList.contains('active')) {
         btn.classList.remove('active');
         currentFilters[cat] = null;
@@ -141,34 +137,7 @@
     });
   });
 
- 
-  function showNotice(text){
-    const backdrop = document.createElement('div');
-    backdrop.className = 'notice-backdrop';
-    backdrop.innerHTML = `
-      <div class="notice" role="dialog" aria-modal="true">
-        <p>${text}</p>
-        <button type="button" class="notice-btn">Окей 👌</button>
-      </div>
-    `;
-    document.body.appendChild(backdrop);
-    const btn = backdrop.querySelector('.notice-btn');
-    btn.focus();
-
-    const close = () => backdrop.remove();
-    btn.addEventListener('click', close);
-    backdrop.addEventListener('click', (e)=>{ if(e.target===backdrop) close(); });
-    document.addEventListener('keydown', function onEsc(e){
-      if(e.key==='Escape'){ close(); document.removeEventListener('keydown', onEsc); }
-    });
-  }
-
- 
-  function isValidCombo(has){
-    
-    return has.drink && (has.main || has.soup);
-  }
-
+  
   const form = document.querySelector('.order-form');
   if (form){
     form.addEventListener('reset', () => {
@@ -177,55 +146,66 @@
       cats.forEach(cat => selected[cat] = null);
       updateSummary();
     });
+  }
 
-    form.addEventListener('submit', (e) => {
-      const has = {
-        soup:    !!selected.soup,
-        main:    !!selected.main,
-        salad:   !!selected.salad,
-        drink:   !!selected.drink,
-        dessert: !!selected.dessert,
-      };
+ 
 
-      
-      if (!has.soup && !has.main && !has.salad && !has.drink && !has.dessert){
+  function showNotice(text) {
+    const overlay = document.createElement('div');
+    overlay.className = 'notify-overlay';
+
+    const card = document.createElement('div');
+    card.className = 'notify-card';
+    card.innerHTML = `
+      <p class="notify-text">${text}</p>
+      <button type="button" class="notify-btn">Окей 👌</button>
+    `;
+
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+
+    const close = () => overlay.remove();
+    card.querySelector('.notify-btn').addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  }
+
+  const formEl = document.querySelector('.order-form');
+  if (formEl) {
+    formEl.addEventListener('submit', (e) => {
+      const hasSoup    = !!selected.soup;
+      const hasMain    = !!selected.main;
+      const hasSalad   = !!selected.salad;
+      const hasDrink   = !!selected.drink;
+      const hasDessert = !!selected.dessert;
+
+      const nothingChosen = !(hasSoup || hasMain || hasSalad || hasDrink || hasDessert);
+      if (nothingChosen) {
         e.preventDefault();
         showNotice('Ничего не выбрано. Выберите блюда для заказа');
         return;
       }
 
-      
-      if (!has.drink){
-        e.preventDefault();
-        showNotice('Выберите напиток');
-        return;
-      }
-
-      
-      if (has.soup && !has.main && !has.salad){
+      if (hasSoup && !hasMain && !hasSalad) {
         e.preventDefault();
         showNotice('Выберите главное блюдо/салат/стартер');
         return;
       }
 
-      
-      if (has.salad && !has.soup && !has.main){
+      if (hasSalad && !hasMain && !hasSoup) {
         e.preventDefault();
         showNotice('Выберите суп или главное блюдо');
         return;
       }
 
-      
-      if (!has.main && !has.soup){
+      if (!hasDrink) {
         e.preventDefault();
-        showNotice('Выберите главное блюдо');
+        showNotice('Выберите напиток');
         return;
       }
 
-      
-      if (!isValidCombo(has)){
+      if (hasDrink && !hasMain && !hasSalad) {
         e.preventDefault();
-        showNotice('Проверьте состав ланча (нужны напиток и суп или главное блюдо).');
+        showNotice('Выберите главное блюдо');
       }
     });
   }

@@ -1,10 +1,13 @@
 :root{
-  --accent: tomato; 
+  /* зелёный акцент для фильтров/кнопок */
+  --accent: #1e8f38;
 }
 
+/* ===== Секции меню ===== */
 .menu-section{ margin: 36px 0; }
 .menu-section > h2{ margin: 0 0 12px; }
 
+/* ===== Фильтры ===== */
 .filters{
   display: flex;
   flex-wrap: wrap;
@@ -18,38 +21,40 @@
   font: inherit;
   padding: 6px 14px;
   border-radius: 9999px;
-  border: 1px solid transparent;    
+  border: 1px solid transparent;
   cursor: pointer;
   line-height: 1.2;
-  text-decoration: none;          
+  text-decoration: none;
   transition: border-color .15s ease, background-color .15s ease;
 }
 .filter-btn:hover,
 .filter-btn.active{
-  border-color: var(--accent);      
-  background-color: #ffffff;        
+  border-color: var(--accent);
+  background-color: #f4fbf6; /* лёгкий зелёный фон */
 }
 .filter-btn:focus-visible{
-  outline: 3px solid color-mix(in oklab, var(--accent) 40%, white);
+  outline: 3px solid rgba(30,143,56,.35); /* фолбэк */
   outline-offset: 2px;
   border-color: var(--accent);
+  /* улучшение для современных браузеров
+  outline: 3px solid color-mix(in oklab, var(--accent) 40%, white); */
 }
 
-
+/* ===== Сетка карточек ===== */
 .menu-grid{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 
-
+/* ===== Карточка блюда ===== */
 .dish-card{
   display: flex;
   flex-direction: column;
   background: #fff;
-  padding: 30px 40px;               
+  padding: 30px 40px;
   border-radius: 35px;
-  border: 2px solid transparent;      
+  border: 2px solid transparent;
   filter: drop-shadow(17px 19px 24px rgba(0,0,0,.13));
   cursor: pointer;
   transition: border-color .15s ease, transform .15s ease;
@@ -60,14 +65,14 @@
 .dish-card img{
   width: 100%;
   height: auto;
-  display: block;                     
+  display: block;
   border-radius: 35px;
 }
 
 .price{ font-size: 18px; font-weight: 700; margin: 14px 0 0; }
 .name { font-size: 18px; margin: 2px 0 0; }
 
-.card-bottom{ margin-top: auto; }     
+.card-bottom{ margin-top: auto; }
 .weight{ color: #777; margin: 12px 0; }
 
 .btn{
@@ -78,9 +83,9 @@
   cursor: pointer;
   font: inherit;
   display: block;
-  width: 100%;                        
+  width: 100%;
   text-align: center;
-  margin-top: 8px;                    
+  margin-top: 8px;
   transition: background-color .15s ease, color .15s ease;
 }
 .dish-card:hover .btn,
@@ -89,7 +94,53 @@
   color: #fff;
 }
 
+/* ===== Комбо-варианты ===== */
+.combos{ margin: 24px 0 16px; }
+.combos-title{ text-align: center; margin: 0 0 18px; }
 
+.combos-grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  gap: 26px 28px;
+  align-items: start;
+}
+
+.combo{
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 46px;
+  flex-wrap: nowrap;
+}
+
+.combo-item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  min-width: 84px;
+}
+.combo-item img{
+  width: 68px;
+  height: 68px;
+  transition: transform .22s ease;
+  transform-origin: center bottom;
+}
+.combo-item:hover img{
+  transform: translateY(-6px) scale(1.06);
+}
+.combo-item span{ font-size: 20px; }
+.combo-item small{
+  margin-top: 2px;
+  font-size: 14px;
+  color: #666;
+  font-style: italic;
+}
+/* десерт центрируется */
+.combo-dessert{ justify-content: center; }
+
+/* ===== Блок оформления заказа ===== */
 .order-wrap{ padding: 12px 0 40px; }
 .order-title{ text-align: center; margin: 6px 0 24px; }
 
@@ -141,6 +192,7 @@ legend{ font-weight: 600; margin-bottom: 16px; }
 .btn-secondary:hover{ background:#f5f5f5; }
 .btn-primary:hover{ background: var(--accent); color:#fff; }
 
+/* ===== Сводка заказа ===== */
 .summary-empty{ margin: 6px 0 16px; }
 .summary-category{ margin: 18px 0; }
 .summary-category h3{ margin:0 0 6px; font-size:18px; }
@@ -149,13 +201,60 @@ legend{ font-weight: 600; margin-bottom: 16px; }
 .summary-total h3{ margin:12px 0 6px; font-size:18px; }
 .summary-sum{ margin:0; font-size:28px; font-weight:700; }
 
+/* ===== Модальное уведомление ===== */
+.notice-overlay{
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+}
+.notice{
+  background: #fff;
+  border: 1.5px solid #000;
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.16);
+  width: min(560px, 92vw);
+  padding: 28px 24px 22px;
+  text-align: center;
+}
+.notice h3{
+  margin: 0 0 20px;
+  font-weight: 700;
+  font-size: 24px;
+}
+.notice .notice-btn{
+  display: inline-block;
+  margin-top: 6px;
+  padding: 12px 26px;
+  border-radius: 12px;
+  border: 1.5px solid #000;
+  background: #fff;
+  color: #000;
+  cursor: pointer;
+  font: inherit;
+  transition: background-color .15s ease, color .15s ease;
+}
+.notice .notice-btn:hover{
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ===== Адаптив ===== */
+@media (max-width: 900px){
+  .combos-grid{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+  .combo{ gap: 36px; }
+}
+
 @media (max-width: 800px){
   .menu-grid{ grid-template-columns: repeat(2, 1fr); }
 }
+
 @media (max-width: 600px){
   .menu-section > h2{ text-align:center; }
   .filters{ justify-content: center; }
   .menu-grid{ grid-template-columns: 1fr; }
   .order-grid{ grid-template-columns: 1fr; }
   .order-title{ text-align:center; }
+  .combos-grid{ grid-template-columns: 1fr; }
 }

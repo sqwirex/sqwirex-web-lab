@@ -1,4 +1,53 @@
-(() => {
+(async () => {
+  const API_URL = 'https://edu.std-900.ist.mospolytech.ru/labs/api/dishes';
+
+  function showNotice(text) {
+    const overlay = document.createElement('div');
+    overlay.className = 'notify-overlay';
+
+    const card = document.createElement('div');
+    card.className = 'notify-card';
+    card.innerHTML = `
+      <p class="notify-text">${text}</p>
+      <button type="button" class="notify-btn">Окей 👌</button>
+    `;
+
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+
+    const close = () => overlay.remove();
+    card.querySelector('.notify-btn').addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  }
+
+  async function loadDishes() {
+    try {
+      const res = await fetch(API_URL, { cache: 'no-store', headers: { 'Accept': 'application/json' } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      const normalized = data.map(it => ({
+        keyword: it.keyword,
+        name: it.name,
+        price: Number(it.price),
+        category: it.category === 'main-course' ? 'main' : it.category,
+        count: it.count,
+        image: it.image,
+        kind: it.kind
+      }));
+
+      window.DISHES = normalized;
+      return normalized;
+    } catch (err) {
+      console.error('Не удалось загрузить блюда:', err);
+      window.DISHES = [];
+      showNotice('Не удалось загрузить блюда. Попробуйте обновить страницу.');
+      return [];
+    }
+  }
+
+  await loadDishes();
+
   const byName = (a, b) => a.name.localeCompare(b.name, 'ru');
 
   const grids = {
@@ -82,8 +131,7 @@
         total += dish.price;
       } else {
         line.hidden = true;
-        
-        none.hidden = true; 
+        none.hidden = true;
       }
     });
     totalSumEl.textContent = String(total);
@@ -106,7 +154,6 @@
     }
   }
 
-  
   document.querySelectorAll('.menu-section').forEach(section => {
     const grid = section.querySelector('.menu-grid');
     if (!grid) return;
@@ -137,36 +184,14 @@
     });
   });
 
-  
-  const form = document.querySelector('.order-form');
-  if (form){
-    form.addEventListener('reset', () => {
+  const formReset = document.querySelector('.order-form');
+  if (formReset){
+    formReset.addEventListener('reset', () => {
       Object.values(grids).forEach(g => g?.querySelectorAll('.dish-card.selected')
         .forEach(c => c.classList.remove('selected')));
       cats.forEach(cat => selected[cat] = null);
       updateSummary();
     });
-  }
-
- 
-
-  function showNotice(text) {
-    const overlay = document.createElement('div');
-    overlay.className = 'notify-overlay';
-
-    const card = document.createElement('div');
-    card.className = 'notify-card';
-    card.innerHTML = `
-      <p class="notify-text">${text}</p>
-      <button type="button" class="notify-btn">Окей 👌</button>
-    `;
-
-    overlay.appendChild(card);
-    document.body.appendChild(overlay);
-
-    const close = () => overlay.remove();
-    card.querySelector('.notify-btn').addEventListener('click', close);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
   }
 
   const formEl = document.querySelector('.order-form');

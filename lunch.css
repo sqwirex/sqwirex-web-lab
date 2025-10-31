@@ -140,6 +140,14 @@
 .combo-caption{ font-weight: 600; }
 .combo-note{ font-size: 14px; color:#666; margin-top: 4px; }
 
+.combos .combo-item img,
+.combos img.combo-img{
+  width: 88px !important;
+  max-width: 88px !important;
+  height: auto !important;
+  display: block;
+  object-fit: contain;
+}
 
 .order-wrap{ padding: 12px 0 40px; }
 .order-title{ text-align: center; margin: 6px 0 24px; }

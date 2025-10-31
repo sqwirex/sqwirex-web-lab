@@ -1,55 +1,11 @@
-(async () => {
-  const API_URL = 'https://edu.std-900.ist.mospolytech.ru/labs/api/dishes';
-
-  function showNotice(text) {
-    const overlay = document.createElement('div');
-    overlay.className = 'notify-overlay';
-
-    const card = document.createElement('div');
-    card.className = 'notify-card';
-    card.innerHTML = `
-      <p class="notify-text">${text}</p>
-      <button type="button" class="notify-btn">Окей 👌</button>
-    `;
-
-    overlay.appendChild(card);
-    document.body.appendChild(overlay);
-
-    const close = () => overlay.remove();
-    card.querySelector('.notify-btn').addEventListener('click', close);
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
-  }
-
-  async function loadDishes() {
-    try {
-      const res = await fetch(API_URL, { cache: 'no-store', headers: { 'Accept': 'application/json' } });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-
-      const normalized = data.map(it => ({
-        keyword: it.keyword,
-        name: it.name,
-        price: Number(it.price),
-        category: it.category === 'main-course' ? 'main' : it.category,
-        count: it.count,
-        image: it.image,
-        kind: it.kind
-      }));
-
-      window.DISHES = normalized;
-      return normalized;
-    } catch (err) {
-      console.error('Не удалось загрузить блюда:', err);
-      window.DISHES = [];
-      showNotice('Не удалось загрузить блюда. Попробуйте обновить страницу.');
-      return [];
-    }
-  }
-
-  await loadDishes();
-
+(() => {
+  const API_ROOT = 'https://edu.std-900.ist.mospolytech.ru/labs/api';
+  const STORAGE_KEY = 'fc.order.v1'; 
+  const rub = n => `${n}₽`;
   const byName = (a, b) => a.name.localeCompare(b.name, 'ru');
 
+  
+  let ALL_DISHES = [];                  
   const grids = {
     soup:    document.querySelector('.menu-grid[data-category="soup"]'),
     main:    document.querySelector('.menu-grid[data-category="main"]'),
@@ -57,27 +13,44 @@
     drink:   document.querySelector('.menu-grid[data-category="drink"]'),
     dessert: document.querySelector('.menu-grid[data-category="dessert"]'),
   };
+  const currentFilters = { soup:null, main:null, salad:null, drink:null, dessert:null };
+  const selected = { soup:null, main:null, salad:null, drink:null, dessert:null };
 
-  const currentFilters = { soup: null, main: null, salad: null, drink: null, dessert: null };
-  const selected = { soup: null, main: null, salad: null, drink: null, dessert: null };
+  const bar = document.getElementById('checkoutBar');
+  const stickyTotal = document.getElementById('stickyTotal');
+  const toCheckout = document.getElementById('toCheckout');
 
-  const cats = ['soup', 'main', 'salad', 'drink', 'dessert'];
-  const summaryEmpty  = document.getElementById('summaryEmpty');
-  const totalBlock    = document.getElementById('summaryTotal');
-  const totalSumEl    = document.getElementById('totalSum');
-  const catBlocks = Object.fromEntries(
-    cats.map(cat => [cat, document.querySelector(`.summary-category[data-cat="${cat}"]`)])
-  );
+  async function loadDishes(){
+    const res = await fetch(`${API_ROOT}/dishes`);
+    if(!res.ok) throw new Error('Не удалось загрузить блюда');
+    const data = await res.json();
+    return data.map(d => ({ ...d, category: d.category === 'main-course' ? 'main' : d.category }));
+  }
 
-  const rub = n => `${n}₽`;
+  function restoreSelection(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    let ids;
+    try { ids = JSON.parse(raw) || {}; } catch { ids = {}; }
+    ['soup','main','salad','drink','dessert'].forEach(cat => {
+      const id = ids[cat];
+      if(!id) return;
+      const dish = ALL_DISHES.find(d => d.id === id);
+      if(dish){ selected[cat] = dish; }
+    });
+  }
+
+  function persistSelection(){
+    const ids = {};
+    Object.keys(selected).forEach(cat => { ids[cat] = selected[cat]?.id ?? null; });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+  }
 
   function renderCard(dish){
-    const card = document.createElement('div');
-    card.className = 'dish-card';
-    card.dataset.dish = dish.keyword;
-    card.tabIndex = 0;
-
-    card.innerHTML = `
+    const el = document.createElement('div');
+    el.className = 'dish-card';
+    el.dataset.dishId = dish.id;
+    el.innerHTML = `
       <img src="${dish.image}" alt="${dish.name}">
       <p class="price">${rub(dish.price)}</p>
       <p class="name">${dish.name}</p>
@@ -86,152 +59,92 @@
         <button class="btn" type="button">Добавить</button>
       </div>
     `;
-
-    const choose = () => selectDish(dish, card);
-
-    card.addEventListener('click', (e) => {
-      if (e.target.closest('.btn') || e.currentTarget === card) choose();
+    const choose = () => selectDish(dish, el);
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('.btn') || e.currentTarget === el) choose();
     });
-    card.addEventListener('keydown', (e) => {
+    el.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(); }
     });
-
-    return card;
+    return el;
   }
 
-  function selectDish(dish, cardEl){
+  function selectDish(dish, card){
     const grid = grids[dish.category];
     grid?.querySelectorAll('.dish-card.selected').forEach(c => c.classList.remove('selected'));
-    cardEl?.classList.add('selected');
+    card?.classList.add('selected');
     selected[dish.category] = dish;
-    updateSummary();
-  }
-
-  function updateSummary(){
-    const any = cats.some(c => selected[c]);
-    summaryEmpty.hidden = any;
-    Object.values(catBlocks).forEach(b => b.hidden = !any);
-    totalBlock.hidden = !any;
-    if (!any) return;
-
-    let total = 0;
-    cats.forEach(cat => {
-      const block   = catBlocks[cat];
-      const line    = block.querySelector('.summary-line');
-      const none    = block.querySelector('.summary-none');
-      const nameEl  = block.querySelector('.summary-name');
-      const priceEl = block.querySelector('.summary-price');
-      const dish    = selected[cat];
-
-      if (dish){
-        nameEl.textContent  = dish.name;
-        priceEl.textContent = rub(dish.price);
-        line.hidden = false; 
-        none.hidden = true;
-        total += dish.price;
-      } else {
-        line.hidden = true;
-        none.hidden = true;
-      }
-    });
-    totalSumEl.textContent = String(total);
+    persistSelection();
+    updateSticky();
   }
 
   function renderCategory(cat){
     const grid = grids[cat];
-    if (!grid) return;
-
-    const list = (window.DISHES || [])
+    if(!grid) return;
+    const list = ALL_DISHES
       .filter(d => d.category === cat && (!currentFilters[cat] || d.kind === currentFilters[cat]))
       .sort(byName);
-
     grid.innerHTML = '';
-    list.forEach(d => grid.appendChild(renderCard(d)));
-
-    if (selected[cat] && !list.some(d => d.keyword === selected[cat].keyword)) {
-      selected[cat] = null;
-      updateSummary();
-    }
+    list.forEach(d => {
+      const el = renderCard(d);
+      if (selected[cat]?.id === d.id) el.classList.add('selected');
+      grid.appendChild(el);
+    });
   }
 
-  document.querySelectorAll('.menu-section').forEach(section => {
-    const grid = section.querySelector('.menu-grid');
-    if (!grid) return;
+  function isComboValid(sel){
+    const has = k => Boolean(sel[k]);
+    const any = has('soup') || has('main') || has('salad') || has('drink') || has('dessert');
+    if (!any) return { ok:false, reason:'empty' };
+    if (!has('drink')) return { ok:false, reason:'needDrink' };
+    if (has('soup') && !has('main') && !has('salad')) return { ok:false, reason:'soupNoMainSalad' };
+    if (has('salad') && !has('soup') && !has('main')) return { ok:false, reason:'saladNoSoupMain' };
+    if (!has('soup') && !has('main') && (has('drink') || has('dessert'))) return { ok:false, reason:'needMain' };
+    return { ok:true };
+  }
 
-    const cat = grid.dataset.category;
-    const filtersWrap = section.querySelector('.filters');
+  function updateSticky(){
+    const sum = Object.values(selected).reduce((acc, d) => acc + (d?.price || 0), 0);
+    const any = sum > 0;
+    bar.hidden = !any;
+    stickyTotal.textContent = String(sum);
+    const valid = isComboValid(selected).ok;
+    toCheckout.setAttribute('aria-disabled', valid ? 'false' : 'true');
+  }
 
-    renderCategory(cat);
-
-    if (!filtersWrap) return;
-
-    filtersWrap.addEventListener('click', (e) => {
-      const btn = e.target.closest('.filter-btn');
-      if (!btn) return;
-
-      const kind = btn.dataset.kind;
-
-      if (btn.classList.contains('active')) {
-        btn.classList.remove('active');
-        currentFilters[cat] = null;
-      } else {
-        filtersWrap.querySelectorAll('.filter-btn.active').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilters[cat] = kind;
-      }
-
+  function initFilters(){
+    document.querySelectorAll('.menu-section').forEach(section => {
+      const grid = section.querySelector('.menu-grid');
+      if (!grid) return;
+      const cat = grid.dataset.category;
+      const wrap = section.querySelector('.filters');
       renderCategory(cat);
-    });
-  });
-
-  const formReset = document.querySelector('.order-form');
-  if (formReset){
-    formReset.addEventListener('reset', () => {
-      Object.values(grids).forEach(g => g?.querySelectorAll('.dish-card.selected')
-        .forEach(c => c.classList.remove('selected')));
-      cats.forEach(cat => selected[cat] = null);
-      updateSummary();
-    });
-  }
-
-  const formEl = document.querySelector('.order-form');
-  if (formEl) {
-    formEl.addEventListener('submit', (e) => {
-      const hasSoup    = !!selected.soup;
-      const hasMain    = !!selected.main;
-      const hasSalad   = !!selected.salad;
-      const hasDrink   = !!selected.drink;
-      const hasDessert = !!selected.dessert;
-
-      const nothingChosen = !(hasSoup || hasMain || hasSalad || hasDrink || hasDessert);
-      if (nothingChosen) {
-        e.preventDefault();
-        showNotice('Ничего не выбрано. Выберите блюда для заказа');
-        return;
-      }
-
-      if (hasSoup && !hasMain && !hasSalad) {
-        e.preventDefault();
-        showNotice('Выберите главное блюдо/салат/стартер');
-        return;
-      }
-
-      if (hasSalad && !hasMain && !hasSoup) {
-        e.preventDefault();
-        showNotice('Выберите суп или главное блюдо');
-        return;
-      }
-
-      if (!hasDrink) {
-        e.preventDefault();
-        showNotice('Выберите напиток');
-        return;
-      }
-
-      if (hasDrink && !hasMain && !hasSalad) {
-        e.preventDefault();
-        showNotice('Выберите главное блюдо');
-      }
+      if (!wrap) return;
+      wrap.addEventListener('click', (e) => {
+        const btn = e.target.closest('.filter-btn');
+        if (!btn) return;
+        const kind = btn.dataset.kind;
+        if (btn.classList.contains('active')) {
+          btn.classList.remove('active'); currentFilters[cat] = null;
+        } else {
+          wrap.querySelectorAll('.filter-btn.active').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active'); currentFilters[cat] = kind;
+        }
+        renderCategory(cat);
+      });
     });
   }
+
+  (async function init(){
+    try{
+      ALL_DISHES = await loadDishes();
+      restoreSelection();
+      initFilters();
+      Object.keys(grids).forEach(renderCategory);
+      updateSticky();
+    }catch(err){
+      console.error(err);
+      alert('Не удалось загрузить меню. Обновите страницу позже.');
+    }
+  })();
 })();

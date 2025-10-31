@@ -52,6 +52,12 @@ h1.logo{
   letter-spacing: .2px;
 }
 
+.site-header{ background:#fff; border-bottom:1px solid #eee; }
+.brand{ font-weight:800; font-size:28px; padding:18px 0 4px; }
+.nav{ display:flex; flex-wrap:wrap; gap:15px; padding:8px 0 18px; }
+.nav a{ color:inherit; text-decoration:none; padding:6px 8px; border-radius:8px; transition:color .15s ease; }
+.nav a:hover{ color:var(--accent); }
+#active{ color:var(--accent); }
 
 nav{ margin: 0; padding: 0; }
 nav ul.menu{

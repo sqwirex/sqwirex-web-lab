@@ -1,6 +1,9 @@
 :root{
-  --accent: tomato;           
-  --filter: #1e8449;          
+ 
+  --accent: tomato;
+
+ 
+  --filter-green: #1e8b41;
 }
 
 
@@ -17,25 +20,25 @@
 .filter-btn{
   appearance: none;
   background: #fff;
-  color: var(--filter);         
+  color: var(--filter-green);         
   font: inherit;
   padding: 6px 14px;
   border-radius: 9999px;
   border: 1px solid transparent;
   cursor: pointer;
   line-height: 1.2;
-  text-decoration: none;        
-  transition: border-color .15s ease, background-color .15s ease;
+  text-decoration: none;              
+  transition: border-color .15s ease, background-color .15s ease, color .15s ease;
 }
 .filter-btn:hover,
 .filter-btn.active{
-  border-color: var(--filter);  
+  border-color: var(--filter-green);  
   background-color: #fff;
 }
 .filter-btn:focus-visible{
-  outline: 3px solid color-mix(in oklab, var(--filter) 35%, white);
+  outline: 3px solid color-mix(in oklab, var(--filter-green) 40%, white);
   outline-offset: 2px;
-  border-color: var(--filter);
+  border-color: var(--filter-green);
 }
 
 
@@ -62,7 +65,7 @@
 
 .dish-card img{
   width: 100%;
-  height: auto;                      
+  height: auto;
   display: block;
   border-radius: 35px;
 }
@@ -70,8 +73,10 @@
 .price{ font-size: 18px; font-weight: 700; margin: 14px 0 0; }
 .name { font-size: 18px; margin: 2px 0 0; }
 
-.card-bottom{ margin-top: auto; }    
+
+.card-bottom{ margin-top: auto; }
 .weight{ color: #777; margin: 12px 0; }
+
 
 .btn{
   background: #f1eee9;
@@ -91,6 +96,49 @@
   background: var(--accent);
   color: #fff;
 }
+
+
+.combos{
+  margin: 24px 0 8px;
+  text-align: center;
+}
+
+.combos-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 280px);
+  justify-content: center;                
+  align-content: start;
+  column-gap: 120px;
+  row-gap: 56px;
+  margin-top: 18px;
+}
+
+.combo-set{
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+.combo-item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 120px;  
+}
+
+.combo-img{
+  width: 88px;
+  height: auto;
+  transition: transform .2s ease;
+}
+.combo-item:hover .combo-img{
+  transform: translateY(-4px) scale(1.04);
+}
+
+.combo-caption{ font-weight: 600; }
+.combo-note{ font-size: 14px; color:#666; margin-top: 4px; }
 
 
 .order-wrap{ padding: 12px 0 40px; }
@@ -144,6 +192,7 @@ legend{ font-weight: 600; margin-bottom: 16px; }
 .btn-secondary:hover{ background:#f5f5f5; }
 .btn-primary:hover{ background: var(--accent); color:#fff; }
 
+
 .summary-empty{ margin: 6px 0 16px; }
 .summary-category{ margin: 18px 0; }
 .summary-category h3{ margin:0 0 6px; font-size:18px; }
@@ -153,95 +202,64 @@ legend{ font-weight: 600; margin-bottom: 16px; }
 .summary-sum{ margin:0; font-size:28px; font-weight:700; }
 
 
-.combos { margin: 32px 0 8px; }
-.combos h2 { text-align: center; margin-bottom: 18px; }
-
-.combos-grid{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 60px 80px;
-  align-items: start;
+.toast{
+  position: fixed;
+  inset: 0;
+  display: none;             
+  place-items: center;
+  z-index: 9999;
 }
-
-
-.combo-set{
-  display: grid;
-  grid-auto-flow: column;               
-  grid-auto-columns: minmax(120px, 1fr);
-  justify-items: center;
-  align-items: start;
-  column-gap: 64px;
-  row-gap: 0;
-  padding: 4px 8px;
+.toast.show{ display: grid; }
+.toast::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.25);
+  backdrop-filter: blur(2px);
 }
-
-.combo-item{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  min-width: 0;
-}
-.combo-item img{
-  width: 96px;
-  height: auto;
-  transition: transform .2s ease;
-}
-.combo-item:hover img{ transform: translateY(-6px) scale(1.06); }
-
-.combo-caption{
-  margin-top: 10px;
-  line-height: 1.25;
-  font-size: 24px;
-  white-space: normal;
-}
-
-.combo-note{
-  margin-top: 6px;
-  font-size: 14px;
-  color: #666;
-  font-style: italic;
-  text-align: center;
-}
-
-
-.notice-backdrop{
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.28);
-  display:flex; align-items:center; justify-content:center;
-  z-index: 1000;
-}
-.notice{
-  background:#fff;
-  width: min(90vw, 520px);
-  padding: 24px 28px;
+.toast-box{
+  position: relative;
+  background: #fff;
+  border: 1px solid #e5e5e5;
   border-radius: 16px;
+  padding: 28px 24px;
+  width: min(540px, calc(100% - 32px));
   text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  box-shadow: 0 20px 60px rgba(0,0,0,.15);
+  z-index: 1;
 }
-.notice p{
-  margin: 0 0 18px;
-  font-size: 24px; line-height: 1.35;
+.toast-title{
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 700;
 }
-.notice-btn{
-  background:#fff; color:#000;
-  border:2px solid #000;
-  border-radius:14px;
-  padding:12px 28px;
-  font: inherit; cursor:pointer;
+.toast-text{
+  margin: 0 0 16px;
+  font-size: 18px;
 }
-.notice-btn:hover{ background:#000; color:#fff; }
+.toast-btn{
+  border: 1.5px solid #222;
+  background: #fff;
+  color: #222;
+  border-radius: 12px;
+  padding: 10px 22px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.toast-btn:hover{
+  background: #222;
+  color: #fff;
+}
+
 
 @media (max-width: 1200px){
-  .combos-grid{ grid-template-columns: repeat(2, 1fr); }
-  .combo-set{ column-gap: 48px; }
+  .combos-grid{ grid-template-columns: repeat(2, 280px); }
 }
 @media (max-width: 800px){
   .menu-grid{ grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 700px){
-  .combos-grid{ grid-template-columns: 1fr; }
-  .combo-set{ column-gap: 40px; }
+  .combos-grid{ grid-template-columns: 280px; }
 }
 @media (max-width: 600px){
   .menu-section > h2{ text-align:center; }
